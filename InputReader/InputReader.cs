@@ -16,11 +16,18 @@
             this.count = count;
         }
 
-        public T[] Of<T>() => Console.ReadLine()
-            .Split()
-            .Take(count)
-            .Select(Convert<T>)
-            .ToArray();
+        public T[] Of<T>()
+        {
+            var line = Console.ReadLine();
+            var values = line
+                .Split()
+                .Take(count)
+                .Select(Convert<T>)
+                .ToArray();
+            if (values.Length != count)
+                throw new ArgumentException($"Ожидалось {count} значений, а получено {values.Length}: {line}");
+            return values;
+        }
 
 
         public T1[] LinesOf<T1>() => LazyLinesOf<T1>().ToArray();
