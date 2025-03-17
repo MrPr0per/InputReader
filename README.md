@@ -4,7 +4,7 @@
 
 ## Установка
 
-- Скопировать файл `InputReader.cs` себе в проект
+- Скопировать файл `InputReader.cs` или его содержимое себе в проект
 - Профит
 
 ## Использование
@@ -60,5 +60,11 @@ var values2 = InputReader.Read(n).Of<ulong>();
 var lines = InputReader.Read(m).LinesOf<string, int>();
 // ленивое считывание строк (то же самое, но IEnumerable вместо массива)
 var lazyLines = InputReader.Read(m).LazyLinesOf<string>();
+
+// считывание запросов разного формата
+var queries = InputReader.Read(queryCount).Commands(ctx => ctx // или LazyCommands вместо Commands
+    .WithName("Help").WithParametersTypes<int, int>()
+    .WithName("Update").WithParametersTypes<int, int, string>()
+);
 ```
 
