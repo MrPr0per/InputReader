@@ -31,6 +31,14 @@ public class InputReader
 
     # endregion
 
+    public T[] ReadArrayOf<T>()
+    {
+        return settings.ReadLine()
+            .Split()
+            .Select(Convert<T>)
+            .ToArray();
+    }
+
     public InputReaderContext Read(int count) => new(this, settings, count);
 
     public class InputReaderContext
@@ -49,14 +57,12 @@ public class InputReader
         public T[] Of<T>()
         {
             var line = settings.ReadLine();
-            var values = line
-                .Split()
-                .Take(count)
-                .Select(Convert<T>)
-                .ToArray();
+            var values = line.Split();
             if (values.Length != count)
                 throw new ArgumentException($"Ожидалось {count} значений, а получено {values.Length}: {line}");
-            return values;
+            return values
+                .Select(Convert<T>)
+                .ToArray();
         }
 
         # region LinesOf
@@ -86,7 +92,8 @@ public class InputReader
 
         # region Commands
 
-        public class ParametersParsers : Dictionary<string, Func<string[], object>>
+        public class ParametersParsers : Dictionary<string, Func<string[], object?>>
+        // {имя_команды: параметры[] => кортеж_с_значениями либо null, если команда без параметров}
         {
         }
 
@@ -94,14 +101,14 @@ public class InputReader
         /// Считывает массив команд разного формата в виде ("имяКоманды", (object)(кортежАргументов)))
         /// </summary>
         /// <param name="configure">Просто напишите ctx => ctx.</param>
-        public (string, object)[] Commands(Func<CommandBuilder, CommandBuilder> configure)
+        public (string, object?)[] Commands(Func<CommandBuilder, CommandBuilder> configure)
             => LazyCommands(configure).ToArray();
 
         /// <summary>
         /// Считывает ленивую коллекцию команд разного формата в виде ("имяКоманды", (object)(кортежАргументов)))
         /// </summary>
         /// <param name="configure">Просто напишите ctx => ctx.</param>
-        public IEnumerable<(string, object)> LazyCommands(Func<CommandBuilder, CommandBuilder> configure)
+        public IEnumerable<(string, object?)> LazyCommands(Func<CommandBuilder, CommandBuilder> configure)
         {
             var parametersParsers = new ParametersParsers();
             var builder = new CommandBuilder(parametersParsers);
@@ -140,9 +147,9 @@ public class InputReader
         public class ParametersBuilder
         {
             private readonly CommandBuilder parent;
-            private readonly Action<Func<string[], object>> addParser;
+            private readonly Action<Func<string[], object?>> addParser;
 
-            public ParametersBuilder(CommandBuilder parent, Action<Func<string[], object>> addParser)
+            public ParametersBuilder(CommandBuilder parent, Action<Func<string[], object?>> addParser)
             {
                 this.addParser = addParser;
                 this.parent = parent;
@@ -150,7 +157,7 @@ public class InputReader
 
             public CommandBuilder WithoutParameters()
             {
-                addParser(parameters => null);
+                addParser(_ => null);
                 return parent;
             }
 

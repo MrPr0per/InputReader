@@ -9,10 +9,11 @@
 
 ## Использование
 
-Для считывания - вызывать у статического класса `InputReader` разные методы
+Для считывания - вызывать у `InputReader.FromConsole`
+или у `new InputReader(<функцияСоздающаяСтроки>)` разные методы
 
-Примечание: так как в большинстве задач используется чтение из консоли и пробел в качестве разделителя, то пока эти
-параметры захардкожены и изменить их нельзя
+Примечание: пока в качестве разделителя захардкожен пробел
+Т.е. чтобы, например, считать 3 инта нужно ввести "1 2 3"
 
 ## Пример использования
 
@@ -36,6 +37,7 @@ var requests = InputReader.Read(m).LazyLinesOf<int, int>();
 ## Полное* описание доступных команд
 
 \* - возможно уже не полное
+примеры использования так же можно посмотреть в `InputReaderTests.cs`
 
 ```csharp
 // считывание константного числа значений разных типов из одной строки, например:
@@ -48,10 +50,13 @@ var value = InputReader.Read<int>();
 // считывание любого числа значений одного типа из одной строки 
 // >>> 0 1 2 1000000000
 var values1 = InputReader.ReadArrayOf<ulong>();
+
 // считывание определенного числа значений одного типа из одной строки (если их там больше или меньше - ошибка)
-// >>> 1 2 3 4 5 - ок
-// >>> 1 2 3 4   - ошибка
-var values2 = InputReader.Read(n).Of<ulong>();
+// например 5 интов:
+// >>> 1 2 3 4 5 6 - ошибка
+// >>> 1 2 3 4 5   - ок
+// >>> 1 2 3 4     - ошибка
+var values2 = InputReader.Read(5).Of<int>();
 
 // считывание переменного числа строк 
 // >>> asdf 1
@@ -62,13 +67,15 @@ var lines = InputReader.Read(m).LinesOf<string, int>();
 var lazyLines = InputReader.Read(m).LazyLinesOf<string>();
 
 // считывание запросов разного формата
-var queries = InputReader.Read(4).Commands(ctx => ctx // или LazyCommands вместо Commands
+var queries = InputReader.Read(5).Commands(ctx => ctx // или LazyCommands вместо Commands
     .WithName("Help").WithParametersTypes<int, int>()
     .WithName("Update").WithParametersTypes<int, int, string>()
+    .WithName("Exit").WithoutParameters()
 );
 // >>> Help 0 10
 // ... Update 0 5 asdfasdf
 // ... Help -1 0
 // ... Help 20 0
+// ... Exit
 ```
 
