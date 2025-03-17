@@ -4,7 +4,8 @@
 
 ## Установка
 
-- Скопировать файл `InputReader.cs` или его содержимое себе в проект
+- Скопировать файл `InputReader.cs` себе в проект 
+  или его содержимое себе в файл с кодом, перенеся using-и в начало файла
 - Профит
 
 ## Использование
@@ -29,9 +30,9 @@
 Как считать:
 
 ```csharp
-var (n, m) = InputReader.Read<int, int>();
-var values = InputReader.Read(1 << n).Of<uint>();
-var requests = InputReader.Read(m).LazyLinesOf<int, int>();
+var (n, m) = InputReader.FromConsole.Read<int, int>();
+var values = InputReader.FromConsole.Read(1 << n).Of<uint>();
+var requests = InputReader.FromConsole.Read(m).LazyLinesOf<int, int>();
 ```
 
 ## Полное* описание доступных команд
@@ -42,32 +43,32 @@ var requests = InputReader.Read(m).LazyLinesOf<int, int>();
 ```csharp
 // считывание константного числа значений разных типов из одной строки, например:
 // >>> asdfasdf 5 3 2.5
-var (s, n, m, k) = InputReader.Read<string, int, int, double>(); 
+var (s, n, m, k) = InputReader.FromConsole.Read<string, int, int, double>(); 
 // (допускается и одно значение)
 // >>> 10
-var value = InputReader.Read<int>();
+var value = InputReader.FromConsole.Read<int>();
 
 // считывание любого числа значений одного типа из одной строки 
 // >>> 0 1 2 1000000000
-var values1 = InputReader.ReadArrayOf<ulong>();
+var values1 = InputReader.FromConsole.ReadArrayOf<ulong>();
 
 // считывание определенного числа значений одного типа из одной строки (если их там больше или меньше - ошибка)
 // например 5 интов:
 // >>> 1 2 3 4 5 6 - ошибка
 // >>> 1 2 3 4 5   - ок
 // >>> 1 2 3 4     - ошибка
-var values2 = InputReader.Read(5).Of<int>();
+var values2 = InputReader.FromConsole.Read(5).Of<int>();
 
 // считывание переменного числа строк 
 // >>> asdf 1
 // ... asdd 2
 // ... aswe 3
-var lines = InputReader.Read(m).LinesOf<string, int>();
+var lines = InputReader.FromConsole.Read(m).LinesOf<string, int>();
 // ленивое считывание строк (то же самое, но IEnumerable вместо массива)
-var lazyLines = InputReader.Read(m).LazyLinesOf<string>();
+var lazyLines = InputReader.FromConsole.Read(m).LazyLinesOf<string>();
 
 // считывание запросов разного формата
-var queries = InputReader.Read(5).Commands(ctx => ctx // или LazyCommands вместо Commands
+var queries = InputReader.FromConsole.Read(5).Commands(ctx => ctx // или LazyCommands вместо Commands
     .WithName("Help").WithParametersTypes<int, int>()
     .WithName("Update").WithParametersTypes<int, int, string>()
     .WithName("Exit").WithoutParameters()

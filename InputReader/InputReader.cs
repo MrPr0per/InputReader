@@ -1,5 +1,8 @@
 ﻿using System.Globalization;
 
+
+# region InputReader
+
 public class ReaderSettings
 {
     public Func<string> ReadLine { get; }
@@ -161,7 +164,7 @@ public class InputReader
                 return parent;
             }
 
-            public CommandBuilder WithParameterType<T1>()
+            public CommandBuilder WithParametersTypes<T1>()
             {
                 addParser(parameters => Convert<T1>(parameters[0]));
                 return parent;
@@ -205,3 +208,5 @@ public class InputReader
 
     #endregion
 }
+
+# endregion
