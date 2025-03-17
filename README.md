@@ -62,9 +62,13 @@ var lines = InputReader.Read(m).LinesOf<string, int>();
 var lazyLines = InputReader.Read(m).LazyLinesOf<string>();
 
 // считывание запросов разного формата
-var queries = InputReader.Read(queryCount).Commands(ctx => ctx // или LazyCommands вместо Commands
+var queries = InputReader.Read(4).Commands(ctx => ctx // или LazyCommands вместо Commands
     .WithName("Help").WithParametersTypes<int, int>()
     .WithName("Update").WithParametersTypes<int, int, string>()
 );
+// >>> Help 0 10
+// ... Update 0 5 asdfasdf
+// ... Help -1 0
+// ... Help 20 0
 ```
 
