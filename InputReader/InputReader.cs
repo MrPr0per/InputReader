@@ -16,7 +16,16 @@ public class ReaderSettings
 
 public class InputReader
 {
-    public static InputReader FromConsole { get; } = new(new ReaderSettings(Console.ReadLine));
+    public static InputReader FromConsole => new(new ReaderSettings(Console.ReadLine!));
+
+    public static InputReader FromStandardInput
+    {
+        get
+        {
+            var reader = new StreamReader(Console.OpenStandardInput());
+            return new InputReader(new ReaderSettings(reader.ReadLine!));
+        }
+    }
 
     private readonly ReaderSettings settings;
 
@@ -40,6 +49,13 @@ public class InputReader
             .Split()
             .Select(Convert<T>)
             .ToArray();
+    }
+
+    public IEnumerable<T> ReadIEnumerableOf<T>()
+    {
+        return settings.ReadLine()
+            .Split()
+            .Select(Convert<T>);
     }
 
     public InputReaderContext Read(int count) => new(this, settings, count);
