@@ -127,7 +127,8 @@ public class InputReader
         /// Считывает ленивую коллекцию команд разного формата в виде ("имяКоманды", (object)(кортежАргументов)))
         /// </summary>
         /// <param name="configure">Просто напишите ctx => ctx.</param>
-        public IEnumerable<(string, object?)> LazyCommands(Func<CommandBuilder, CommandBuilder> configure)
+        public IEnumerable<(string name, object? parameters)> LazyCommands(
+            Func<CommandBuilder, CommandBuilder> configure)
         {
             var parametersParsers = new ParametersParsers();
             var builder = new CommandBuilder(parametersParsers);
