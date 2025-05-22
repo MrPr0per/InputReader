@@ -6,7 +6,6 @@
 
 - Скопировать файл `InputReader.cs` себе в проект
   или его содержимое себе в файл с кодом, перенеся using-и в начало файла
-- Профит
 
 ## Использование
 
@@ -14,17 +13,18 @@
 или у `new InputReader(<функцияСоздающаяСтроки>)` разные методы
 
 Примечание: пока в качестве разделителя захардкожен пробел
-Т.е. чтобы, например, считать 3 инта нужно ввести "1 2 3"
+Т.е. например, при считывании трех интов метод будет ожидать "1 2 3"
 
 ## Пример использования
 
 Формат ввода:
 
 ```markdown
-В первой строке записаны два числа n и m (1≤n≤17,1≤m≤105).
-Во второй строке записаны 2^n целых чисел a1,a2,…,a^2n (0≤ai<2^30).
+В первой строке записаны два числа n и m (1 ≤ n ≤ 17, 1 ≤ m ≤ 105).
+Во второй строке записаны 2^n целых чисел a1, a2 , … , a^2n (0 ≤ a_i < 2^30).
 В следующих m строках записаны запросы.
-В i-ой строке записаны целые числа pi, bi (1≤pi≤2^n, 0≤bi<2^30) — это i-ый запрос.
+В i-ой строке записаны целые числа p_i, b_i (1 ≤ p_i ≤ 2^n, 0 ≤ bi < 2^30)
+ — это i-ый запрос.
 ```
 
 Как считать:
@@ -35,9 +35,19 @@ var values = InputReader.FromConsole.Read(1 << n).Of<uint>();
 var requests = InputReader.FromConsole.Read(m).LazyLinesOf<int, int>();
 ```
 
-## Полное* описание доступных команд
+Для сравнения вот столько кода понадобится без InputReader:
+```csharp
+var input = Console.ReadLine().Split();
+var (n, m) = (int.Parse(input[0]), int.Parse(input[1]));
+var values = Console.ReadLine().Split().Select(uint.Parse).ToArray(); 
+if (values.Length != 1 << n) throw new ArgumentException();
+var requests = Enumerable.Range(0, m)
+    .Select(_ => Console.ReadLine()!.Split())
+    .Select(parts => (int.Parse(parts[0]), int.Parse(parts[1])))
+    .ToArray();
+```
 
-\* - возможно уже не полное
+## Описание некоторых доступных команд
 примеры использования так же можно посмотреть в `InputReaderTests.cs`
 
 ```csharp
