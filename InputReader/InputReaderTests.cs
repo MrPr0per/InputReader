@@ -123,9 +123,8 @@ public class InputReaderTests
     }
 
     [Test]
-    public void Read_Commands_InvalidCountOfElements()
+    public void Read_InvalidCountOfElements()
     {
-        Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(-1).Of<string>());
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(0).Of<string>());
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(1).Of<string>());
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(2).Of<string>());
@@ -133,23 +132,38 @@ public class InputReaderTests
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(4).Of<string>());
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(5).Of<string>());
         Assert.Throws<ArgumentException>(() => CreateReader("a b c").Read(6).Of<string>());
+    }
 
-        // строк не может быть слишком много, в отличие от значений в строке
-        // да и сликом мало как будто бы тоже быть не может
-        // // reader = CreateReader("1 2", "3 4", "5 6");
-        // // Assert.Throws<ArgumentException>(() => reader.Read(2).LinesOf<int, ushort>());
-        // reader = CreateReader("1 2", "3 4", "5 6");
-        // Assert.Throws<ArgumentException>(() => reader.Read(4).LinesOf<int, ushort>());
-        // // reader = CreateReader("1 2", "3 4", "5 6");
-        // // Assert.Throws<ArgumentException>(() => reader.Read(2).LazyLinesOf<int, int>().ToArray());
-        // reader = CreateReader("1 2", "3 4", "5 6");
-        // Assert.Throws<ArgumentException>(() => reader.Read(4).LazyLinesOf<int, int>().ToArray());
-        //
-        // // reader = CreateReader("1 2", "3 4", "5 6");
-        // // Assert.Throws<ArgumentException>(() => reader.Read(2).Commands(ctx => ctx
-        // //     .WithName("1").WithParameterType<int>()));
-        // reader = CreateReader("1 2", "3 4", "5 6");
-        // Assert.Throws<ArgumentException>(() => reader.Read(4).Commands(ctx => ctx
-        //     .WithName("1").WithParameterType<int>()));
+    [Test]
+    public void Read_InvalidCountOfLines()
+    {
+        // Многострочного ввода не может быть слишком много, в отличие от значений в строке
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(0).LinesOf<string>());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(1).LinesOf<string>());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(2).LinesOf<string>());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(3).LinesOf<string>());
+
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(0).LazyLinesOf<string>().ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(1).LazyLinesOf<string>().ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(2).LazyLinesOf<string>().ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "b", "c").Read(3).LazyLinesOf<string>().ToArray());
+        
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(0)
+            .Commands(ctx => ctx.WithName("a").WithoutParameters()));
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(1)
+            .Commands(ctx => ctx.WithName("a").WithoutParameters()));
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(2)
+            .Commands(ctx => ctx.WithName("a").WithoutParameters()));
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(3)
+            .Commands(ctx => ctx.WithName("a").WithoutParameters()));
+        
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(0)
+            .LazyCommands(ctx => ctx.WithName("a").WithoutParameters()).ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(1)
+            .LazyCommands(ctx => ctx.WithName("a").WithoutParameters()).ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(2)
+            .LazyCommands(ctx => ctx.WithName("a").WithoutParameters()).ToArray());
+        Assert.DoesNotThrow(() => CreateReader("a", "a", "a").Read(3)
+            .LazyCommands(ctx => ctx.WithName("a").WithoutParameters()).ToArray());
     }
 }

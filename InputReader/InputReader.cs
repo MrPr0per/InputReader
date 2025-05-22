@@ -16,15 +16,21 @@ public class ReaderSettings
 
 public class InputReader
 {
-    public static InputReader FromConsole => new(new ReaderSettings(Console.ReadLine!));
-
-    public static InputReader FromStandardInput
+    public static InputReader CreateFromConsole()
     {
-        get
-        {
-            var reader = new StreamReader(Console.OpenStandardInput());
-            return new InputReader(new ReaderSettings(reader.ReadLine!));
-        }
+        return new InputReader(new ReaderSettings(Console.ReadLine!));
+    }
+
+    public static InputReader CreateFromStandardInput()
+    {
+        var reader = new StreamReader(Console.OpenStandardInput());
+        return new InputReader(new ReaderSettings(reader.ReadLine!));
+    }
+
+    public static InputReader CreateFromFile(string filePath)
+    {
+        var reader = new StreamReader(filePath);
+        return new InputReader(new ReaderSettings(reader.ReadLine!));
     }
 
     private readonly ReaderSettings settings;
@@ -45,9 +51,7 @@ public class InputReader
 
     public T[] ReadArrayOf<T>()
     {
-        return settings.ReadLine()
-            .Split()
-            .Select(Convert<T>)
+        return ReadIEnumerableOf<T>()
             .ToArray();
     }
 
@@ -58,15 +62,15 @@ public class InputReader
             .Select(Convert<T>);
     }
 
-    public InputReaderContext Read(int count) => new(this, settings, count);
+    public InputReaderContext Read(uint count) => new(this, settings, count);
 
     public class InputReaderContext
     {
         private readonly InputReader inputReader;
         private readonly ReaderSettings settings;
-        private readonly int count;
+        private readonly uint count;
 
-        public InputReaderContext(InputReader inputReader, ReaderSettings settings, int count)
+        public InputReaderContext(InputReader inputReader, ReaderSettings settings, uint count)
         {
             this.inputReader = inputReader;
             this.count = count;
@@ -95,16 +99,16 @@ public class InputReader
 
         # region LazyLinesOf
 
-        public IEnumerable<T1> LazyLinesOf<T1>() => Enumerable.Range(0, count)
+        public IEnumerable<T1> LazyLinesOf<T1>() => Enumerable.Range(0, (int)count)
             .Select(_ => inputReader.Read<T1>());
 
-        public IEnumerable<(T1, T2)> LazyLinesOf<T1, T2>() => Enumerable.Range(0, count)
+        public IEnumerable<(T1, T2)> LazyLinesOf<T1, T2>() => Enumerable.Range(0, (int)count)
             .Select(_ => inputReader.Read<T1, T2>());
 
-        public IEnumerable<(T1, T2, T3)> LazyLinesOf<T1, T2, T3>() => Enumerable.Range(0, count)
+        public IEnumerable<(T1, T2, T3)> LazyLinesOf<T1, T2, T3>() => Enumerable.Range(0, (int)count)
             .Select(_ => inputReader.Read<T1, T2, T3>());
 
-        public IEnumerable<(T1, T2, T3, T4)> LazyLinesOf<T1, T2, T3, T4>() => Enumerable.Range(0, count)
+        public IEnumerable<(T1, T2, T3, T4)> LazyLinesOf<T1, T2, T3, T4>() => Enumerable.Range(0, (int)count)
             .Select(_ => inputReader.Read<T1, T2, T3, T4>());
 
         #endregion
